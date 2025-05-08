@@ -917,13 +917,13 @@
       //   // all JSON answers are parsed: "users" is the array of them
       //   .then((users) => users.forEach((user) => alert(user.name)));
 
-      // Promise.race([
-      //   new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
-      //   new Promise((resolve, reject) =>
-      //     setTimeout(() => reject(new Error("Whoops!")), 2000)
-      //   ),
-      //   new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000)),
-      // ]).then(alert); // 1
+      Promise.race([
+        new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
+        new Promise((resolve, reject) =>
+          setTimeout(() => reject(new Error("Whoops!")), 2000)
+        ),
+        new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000)),
+      ]).then(alert); // 1
 
       Promise.any([
         new Promise((resolve, reject) =>
