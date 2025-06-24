@@ -2,17 +2,49 @@ const express = require("express");
 
 const app = express();
 
-app.use("/dashboard",(req, res) => {
-    res.send("Hello from the Dashboard..!");
+// app.use("/hello/bro",(req, res) => {
+//     res.send("Hello brother..!");
+// });
+
+// app.use("/hello/user",(req, res) => {
+//     res.send("Hello, User..!");
+// });
+  
+// app.use("/hello",(req, res) => {
+//     res.send("Hello Hello Hello..!");
+// });
+
+// app.use("/test/userdata",(req, res) => {
+//     res.send("User data..!");
+// });
+
+// app.use("/test",(req, res) => {
+//     res.send("Hello from the server..!");
+// });
+
+// app.use("/",(req, res) => {
+//     res.send("Hello from the Dashboard..!");
+// });
+
+// This will only handle GET call to /user
+app.get("/user", (req, res) => {
+    res.send({firstname: "Prakash", lastname: "Maddi"});
 });
 
-app.use("/hello",(req, res) => {
-    res.send("Hello Hello Hello..!");
+app.post("/user", (req, res) => {
+    //saving data to the db
+    res.send("Data successfully saved to the db");
 });
 
+app.delete("/user", (req, res) => {
+    res.send("Deleted successfully");
+});
+
+// This will match all the HTTP method API calls to /test
 app.use("/test",(req, res) => {
     res.send("Hello from the server..!");
 });
+
 app.listen(8888, () => {
     console.log("Server is running successfully on port 8888..!");
 });
