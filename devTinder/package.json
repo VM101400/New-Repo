@@ -1,0 +1,21 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "Tinder for developers",
+  "repository": {
+    "type": "git",
+    "url": "New-Repo"
+  },
+  "license": "ISC",
+  "author": "Prakash Maddi",
+  "type": "Reactjs, Nodejs",
+  "main": "index.js",
+  "scripts": {
+    "start" : "node src/app.js",
+    "dev" : "nodemon src/app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
