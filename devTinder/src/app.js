@@ -2,7 +2,7 @@ const express = require("express");
 
 const app = express();
 
-app.use("/",(req, res) => {
+app.use("/dashboard",(req, res) => {
     res.send("Hello from the Dashboard..!");
 });
 
