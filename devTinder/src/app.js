@@ -58,6 +58,9 @@ app.use("/test",(req, res) => {
 //     res.send({firstname: "Sainath", lastname: "Maddi"});
 // });
 
+// app.use("/route", rH, [rH2, rH3], rH4, rH5);
+
+/*
 app.use("/user", 
     (req, res, next) => {
         console.log("Handling the route user!!");
@@ -79,6 +82,31 @@ app.use("/user",
       res.send("4th Response.")
     }
 );
+
+*/
+
+// GET /users => middleware chain => request handler
+app.use("/user", (req, res, next) => {
+        console.log("Handling the route user!!");
+       next();
+});
+
+app.use("/user", (req, res, next) => {                  //
+        console.log("Handling the route user 2!!");     //  These are middleware
+        //res.send("1st Route Handler.")                //
+        next();                                         //
+},
+
+(req, res, next) => {                                   //
+        console.log("Handling the route user 2!!");     //  These are middleware
+        //res.send("2nd Route Handler.")                //
+        next();                                         //
+},
+
+(req, res, next) => {
+        console.log("Handling the route user 2!!");
+        res.send("3rd Route Handler.")                  // request handler
+});
 
 app.listen(8888, () => {
     console.log("Server is running successfully on port 8888..!");
