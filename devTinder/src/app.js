@@ -53,10 +53,32 @@ app.use("/test",(req, res) => {
 
 */
 
-app.get("/user/:userid/:name/:password", (req, res) =>{
-    console.log(req.params);   //req.query
-    res.send({firstname: "Sainath", lastname: "Maddi"});
-});
+// app.get("/user/:userid/:name/:password", (req, res) =>{
+//     console.log(req.params);   //req.query
+//     res.send({firstname: "Sainath", lastname: "Maddi"});
+// });
+
+app.use("/user", 
+    (req, res, next) => {
+        console.log("Handling the route user!!");
+       // res.send("Response.")
+       next();
+    }, 
+    (req, res, next) => {
+      console.log("Handling the route user 2!!");
+      //res.send("2nd Response.")
+      next();
+    },
+    (req, res, next) => {
+      console.log("Handling the route user 3!!");
+      //res.send("3rd Response.")
+      next();
+    },
+    (req, res, next) => {
+      console.log("Handling the route user 4!!");
+      res.send("4th Response.")
+    }
+);
 
 app.listen(8888, () => {
     console.log("Server is running successfully on port 8888..!");
