@@ -85,6 +85,7 @@ app.use("/user",
 
 */
 
+/*
 // GET /users => middleware chain => request handler
 app.use("/user", (req, res, next) => {
         console.log("Handling the route user!!");
@@ -106,6 +107,23 @@ app.use("/user", (req, res, next) => {                  //
 (req, res, next) => {
         console.log("Handling the route user 2!!");
         res.send("3rd Route Handler.")                  // request handler
+});
+
+*/
+const {adminAuth, userAuth} = require("./middlewares/auth");
+app.use("/admin", adminAuth);
+
+app.use("/user", userAuth, (req, res) => {
+    res.send("User data sent");
+});
+
+app.use("/admin/getAllData", (req, res) => {
+    res.send("All data sent");
+});
+
+
+app.use("/admin/deleteUser", (req, res) => {
+    res.send("Deleted a User");
 });
 
 app.listen(8888, () => {
