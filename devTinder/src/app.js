@@ -1,5 +1,6 @@
 const express = require("express");
-
+const { connectDB } = require("./config/database");
+const User = require('./models/user');
 const app = express();
 
 /*
@@ -130,6 +131,7 @@ app.use("/admin/deleteUser", (req, res) => {
 
 */
 
+/*
 app.use("/", (err, req, res, next) => {
     if(err) {
         // Log your error
@@ -155,6 +157,31 @@ app.use("/", (err, req, res, next) => {
     }
 });
 
-app.listen(8888, () => {
-    console.log("Server is running successfully on port 8888..!");
+*/
+
+app.post("/signup", async (req, res) => {
+    const user = new User({
+        firstName: "John",
+        lastName: "Sena",
+        emailId: "John@sena.com",
+        password: "john@123",
+    });
+    try{
+        await user.save();
+        res.send("User added successfully");
+    }catch(err){
+        res.status(400).send("Error saving the user:" + err.message);
+    }
+    
+});
+
+connectDB()
+.then(() => {
+    console.log("Database connection established...");
+    app.listen(8888, () => {
+        console.log("Server is running successfully on port 8888..!");
+    });
+})
+.catch(err => {
+    console.log("Database cannot be connected!!");
 });
