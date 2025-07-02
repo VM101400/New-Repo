@@ -159,13 +159,13 @@ app.use("/", (err, req, res, next) => {
 
 */
 
+app.use(express.json());
+
 app.post("/signup", async (req, res) => {
-    const user = new User({
-        firstName: "John",
-        lastName: "Sena",
-        emailId: "John@sena.com",
-        password: "john@123",
-    });
+
+    
+    // Creating a new instance of the User model
+    const user = new User(req.body);
     try{
         await user.save();
         res.send("User added successfully");
