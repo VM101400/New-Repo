@@ -176,9 +176,42 @@ app.post("/signup", async (req, res) => {
     
 });
 
+// Delete a user from the database using _id
+app.delete("/user", async (req, res) =>{
+    const userId = req.body._id;
+
+    try{
+        const users = await User.findByIdAndDelete({_id: userId});
+        if(!users){
+            res.status(400).send("User not found");
+        }else{
+            res.send("User deleted successfully");
+        }
+    }
+    catch(err) {
+        res.status(400).send("something went wrong");
+    }
+});
+
+// Update data of the user
+app.patch("/user", async (req, res) =>{
+    const userId = req.body.userId;
+    const data = req.body;
+    try{
+        const user = await User.findByIdAndUpdate({_id: userId}, data, {returnDocument: "after"});
+        console.log(user);
+        res.send("User updated Successfully");
+    }
+    catch(err){
+        res.status(400).send("Something went wrong");
+    }
+});
+
 // Get user by emailId
 app.get("/user", async (req, res) =>{
     const userEmail = req.body.emailId;
+
+    // find the user using findOne
     // try{
     //     const users = await User.findOne({emailId: userEmail}).exec();
     //     if(!users){
@@ -191,6 +224,7 @@ app.get("/user", async (req, res) =>{
     //     res.status(400).send("Something went wrong");
     // }
     
+    // find the user using find
     try{
         const users = await User.find({emailId: userEmail});
         if(users.length === 0){
@@ -202,6 +236,21 @@ app.get("/user", async (req, res) =>{
     catch(err) {
         res.status(400).send("Something went wrong");
     }
+
+    // find the user by _id using findById
+    // const userId = req.body._id;
+    // try{
+    //     const users = await User.findById({_id: userId}).exec();
+    //     if(!users){
+    //         res.status(400).send("User not found");
+    //     }
+    //     else{
+    //         res.send(users);
+    //     }
+    // }
+    // catch(err){
+    //     res.status(400).send("something went wrong");
+    // }
 });
 
 // Feed API - GET /feed - get all the users from the database
