@@ -208,6 +208,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
+
 // Delete a user from the database using _id
 app.delete("/user", async (req, res) =>{
     const userId = req.body._id;
