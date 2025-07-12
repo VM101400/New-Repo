@@ -4,164 +4,12 @@ const { connectDB } = require("./config/database");
 const User = require('./models/user');
 const {validateSignUpData} = require('./utils/validation');
 const bcrypt = require('bcrypt');
-
-/*
-
-app.use("/hello/bro",(req, res) => {
-    res.send("Hello brother..!");
-});
-
-app.use("/hello/user",(req, res) => {
-    res.send("Hello, User..!");
-});
-  
-app.use("/hello",(req, res) => {
-    res.send("Hello Hello Hello..!");
-});
-
-app.use("/test/userdata",(req, res) => {
-    res.send("User data..!");
-});
-
-app.use("/test",(req, res) => {
-    res.send("Hello from the server..!");
-});
-
-app.use("/",(req, res) => {
-    res.send("Hello from the Dashboard..!");
-});
-
-*/
-
-/*
-
-// This will only handle GET call to /user
-app.get("/user", (req, res) => {
-    res.send({firstname: "Prakash", lastname: "Maddi"});
-});
-
-app.post("/user", (req, res) => {
-    //saving data to the db
-    res.send("Data successfully saved to the db");
-});
-
-app.delete("/user", (req, res) => {
-    res.send("Deleted successfully");
-});
-
-// This will match all the HTTP method API calls to /test
-app.use("/test",(req, res) => {
-    res.send("Hello from the server..!");
-});
-
-*/
-
-// app.get("/user/:userid/:name/:password", (req, res) =>{
-//     console.log(req.params);   //req.query
-//     res.send({firstname: "Sainath", lastname: "Maddi"});
-// });
-
-// app.use("/route", rH, [rH2, rH3], rH4, rH5);
-
-/*
-app.use("/user", 
-    (req, res, next) => {
-        console.log("Handling the route user!!");
-       // res.send("Response.")
-       next();
-    }, 
-    (req, res, next) => {
-      console.log("Handling the route user 2!!");
-      //res.send("2nd Response.")
-      next();
-    },
-    (req, res, next) => {
-      console.log("Handling the route user 3!!");
-      //res.send("3rd Response.")
-      next();
-    },
-    (req, res, next) => {
-      console.log("Handling the route user 4!!");
-      res.send("4th Response.")
-    }
-);
-
-*/
-
-/*
-// GET /users => middleware chain => request handler
-app.use("/user", (req, res, next) => {
-        console.log("Handling the route user!!");
-       next();
-});
-
-app.use("/user", (req, res, next) => {                  //
-        console.log("Handling the route user 2!!");     //  These are middleware
-        //res.send("1st Route Handler.")                //
-        next();                                         //
-},
-
-(req, res, next) => {                                   //
-        console.log("Handling the route user 2!!");     //  These are middleware
-        //res.send("2nd Route Handler.")                //
-        next();                                         //
-},
-
-(req, res, next) => {
-        console.log("Handling the route user 2!!");
-        res.send("3rd Route Handler.")                  // request handler
-});
-
-*/
-
-/*
-const {adminAuth, userAuth} = require("./middlewares/auth");
-app.use("/admin", adminAuth);
-
-app.use("/user", userAuth, (req, res) => {
-    res.send("User data sent");
-});
-
-app.use("/admin/getAllData", (req, res) => {
-    res.send("All data sent");
-});
-
-
-app.use("/admin/deleteUser", (req, res) => {
-    res.send("Deleted a User");
-});
-
-*/
-
-/*
-app.use("/", (err, req, res, next) => {
-    if(err) {
-        // Log your error
-        res.status(500).send("something went wrong");
-    }
-});
-
-app.get("/getUserData", (req, res) => {
-    try{
-        // Logic of DB call and get user data
-        throw new Error("jyhtgdf");
-        res.send("User data sent");
-    }
-    catch (err){
-        res.status(500).send("Some error contact support team");
-    }
-});
-
-app.use("/", (err, req, res, next) => {
-    if(err) {
-        // Log your error
-        res.status(500).send("something went wrong");
-    }
-});
-
-*/
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const {userAuth} = require('./middlewares/auth');
 
 app.use(express.json());
+app.use(cookieParser()); 
 
 app.post("/signup", async (req, res,) => {
     try{
@@ -194,10 +42,14 @@ app.post("/login", async (req, res) => {
         if(!user){
             throw new Error("Invalid credientials");
         }
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await user.validatePassword(password);      //  validate and returns the psswd from user.js
 
         if(isPasswordValid){
-            res.send("User login Successful!!");
+            const token = await user.getJWT();      //  returns the token from user.js
+
+            // Add the token to the cookie ad send the response back to the user
+            res.cookie("token", token, {expires: new Date(Date.now() + 168 * 3600000)});        //  cookie will be removed after 7 days
+            res.send("Login Successful!!");
         }
         else{
             throw new Error("Invalid credientials");
@@ -208,104 +60,24 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
-// Delete a user from the database using _id
-app.delete("/user", async (req, res) =>{
-    const userId = req.body._id;
+app.get("/profile", userAuth,async(req, res) => {
 
     try{
-        const users = await User.findByIdAndDelete({_id: userId});
-        if(!users){
-            res.status(400).send("User not found");
-        }else{
-            res.send("User deleted successfully");
-        }
-    }
-    catch(err) {
-        res.status(400).send("something went wrong");
+        const user = req.user;
+        res.send(user);
+    }catch(err){
+        res.status(400).send("ERROR : " + err.message);
     }
 });
 
-// Update data of the user
-app.patch("/user/:userId", async (req, res) =>{
-    const userId = req.params?.userId;
-    const data = req.body;
-
-    try{
-        const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
-        const isUpdateAllowed = Object.keys(data).every((k) =>
-        ALLOWED_UPDATES.includes(k));
-        if(!isUpdateAllowed){
-            throw new Error("Updates not allowed");
-        }
-        if(data?.skills.length > 10){
-            throw new Error("Skills cannot more than 10");
-        }
-        const user = await User.findByIdAndUpdate({_id: userId}, data, {returnDocument: "after", runValidators: true});
-        console.log(user);
-        res.send("User updated Successfully");
-    }
-    catch(err){
-        res.status(400).send("UPDATE FAILED:" + err.message);
-    }
+app.post("/sendConnectionRequest", userAuth, async(req, res) => {
+    // Sending a connection request
+    const user = req.user;
+    console.log("Sending a connection request");
+    res.send(user.firstName + " sent the Connection Request!");
 });
 
-// Get user by emailId
-app.get("/user", async (req, res) =>{
-    const userEmail = req.body.emailId;
 
-    // find the user using findOne
-    // try{
-    //     const users = await User.findOne({emailId: userEmail}).exec();
-    //     if(!users){
-    //         res.status(400).send("User not found!");
-    //     }else{
-    //         res.send(users);
-    //     }
-    // }
-    // catch(err){
-    //     res.status(400).send("Something went wrong");
-    // }
-    
-    // find the user using find
-    try{
-        const users = await User.find({emailId: userEmail});
-        if(users.length === 0){
-            res.status(400).send("User not found!");
-        }else{
-            res.send(users);
-        }
-    }
-    catch(err) {
-        res.status(400).send("Something went wrong");
-    }
-
-    // find the user by _id using findById
-    // const userId = req.body._id;
-    // try{
-    //     const users = await User.findById({_id: userId}).exec();
-    //     if(!users){
-    //         res.status(400).send("User not found");
-    //     }
-    //     else{
-    //         res.send(users);
-    //     }
-    // }
-    // catch(err){
-    //     res.status(400).send("something went wrong");
-    // }
-});
-
-// Feed API - GET /feed - get all the users from the database
-app.get("/feed", async (req, res) => {
-    try{
-        const users = await User.find({});
-        res.send(users);
-    }
-    catch(err) {
-        res.status(400).send("Something went wrong");
-    }
-});
 
 connectDB()
 .then(() => {
