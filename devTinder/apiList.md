@@ -14,8 +14,11 @@
 
 ## connectionRequestRouter
 
-- POST /requesst/send/interested/:userId
-- POST /request/send/ignored/:usserId
+<!-- - POST /requesst/send/interested/:userId
+- POST /request/send/ignored/:usserId -->
+
+- POST /requesst/send/:status/:userId
+
 - POST /request/review/accepted/:requestId
 - POST /request/review/rejected/:requestId
 
@@ -25,4 +28,4 @@
 - GET /user/requests/received
 - GET /user/feed -Gets you the profiles of other users on platform
 
-Status: ignore, interested, accepted, rejected
+Status: ignored, interested, accepted, rejected
