@@ -46,7 +46,7 @@ profileRouter.patch("/profile/password", userAuth, async (req, res) => {
         }
         user.password = await bcrypt.hash(newPassword, 10);
         await user.save();
-        res.send("Updated the password successfully!!");
+        res.send("Password Updated Successfully!!");
     }
     catch(err) {
         res.status(400).send("ERROR: " + err.message);
