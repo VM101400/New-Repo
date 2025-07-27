@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import UserCard from './UserCard';
+import EViewProfileData from './EViewProfileData';
 import { BASE_URL } from '../utils/constants';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userSlice';
@@ -31,7 +31,7 @@ const EditProfile = ({user}) => {
         catch(err){
             setError(err.response.data);
         }
-    }
+    };
 
     const [error, setError] = useState("");
    
@@ -79,7 +79,8 @@ const EditProfile = ({user}) => {
                     </div>
                 </div>
             </div>
-            <UserCard user={{firstName, lastName, photoUrl, age, gender, about}}/>
+            {/* <UserCard user={{firstName, lastName, photoUrl, age, gender, about}}/> */}
+            <EViewProfileData user={{firstName, lastName, photoUrl, age, gender, about}}/>
         </div>
         {showToast &&
             <div className="toast toast-top toast-center">

@@ -21,7 +21,10 @@ const Login = () => {
         emailId, password,
       }, {withCredentials: true});
       dispatch(addUser(res?.data?.data));
-      return navigate("/");
+      // If login is successful, redirect to the home page
+      if(res.status === 200){
+        window.location.href = "/";
+      }
     }catch(err){
       setError(err?.response?.data || "Something went wrong");
     }
