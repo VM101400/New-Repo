@@ -49,10 +49,14 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req, res) 
 });
 
 requestRouter.post("/request/review/:status/:requestId", userAuth, async(req, res) => {
-    // fromUser => toUser
-    // loggedInId = toUserId
-    // status = interested
-    // requestId should be valid
+    // Reviewing a connection request
+    // status can be "accepted" or "rejected"
+    // requestId is the ID of the connection request
+    // toUserId is the ID of the user who sent the request
+    // fromUserId is the ID of the user who received the request
+    // status can be "interested" or "ignored"
+    // fromUserId is the ID of the user who sent the request
+    // toUserId is the ID of the user who received the request
     try{
         const loggedInUser = req.user;
         const { status, requestId } = req.params;
