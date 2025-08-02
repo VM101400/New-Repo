@@ -40,3 +40,55 @@ Route=/ => Feed
 Route=/login => Login
 Route=/connections => Connections
 Route=/profile => Profile
+
+# Deployment
+
+- Signup on AWS
+- Launch Instance
+- chmod 400 <secret>.pem
+- Connected to the machine using ssh command ( ssh -i "devTinder-secret.pem" ubuntu@ec2-43-204-96-49.ap-south-1.compute.amazonaws.com )
+- Installed Node version 24.0.2 (nvm install 24.0.2)
+- Git clone
+- Frontend project
+  - npm install -> dependencies install
+  - npm run build
+  - sudo apt update
+  - sudo apt install nginx
+  - sudo systemctl start nginx
+  - sudo systemctl enable nginx
+  - Copy code from dist(build file) to /var/www/html/
+  - sudo scp -r dist/\* /var/www/html/
+  - Enable port :80 of your instance (AWS instance)
+- Backend Project
+
+  - allowed ec2 instance public IP on Mongodb server (8888)
+  - installed npm install pm2 -g
+  - pm2 start npm --name "devtinder-backend" -- start
+  - pm2 logs
+  - pm2 list, pm2 flush <name>, pm2 stop<name>, pm2 delete <name>
+  - config nginx - sudo nano /etc/nginx/sites-available/default
+  - restart nginx - sudo systemctl restart nginx
+  - Modify the BASE_URL in frontend project to "/api"
+
+# Nginx config:
+
+Frontend = http://54.159.6.65/
+Backend = http://54.159.6.65/:8888/
+
+Domain name = devTinder.com => 54.159.6.65
+
+Frontend = devTinder.com
+Backend = devTinder.com:8888 => devTinder.com/api
+
+nginx config :
+
+server_name 54.159.6.65;
+
+location /api/ {
+proxy_pass http://localhost:8888/;
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection 'upgrade';
+proxy_set_header Host $host;
+proxy_cache_bypass $http_upgrade;
+}
