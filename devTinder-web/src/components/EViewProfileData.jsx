@@ -6,7 +6,7 @@ const UserCard = ({user}) => {
     <div key={_id} className="card bg-base-300 w-96 ">
         <div className="card-image bg-base-300 my-5  ">
           <figure>
-            <img className="w-60 h-80 "
+            <img className="w-60 h-70 "
             src={photoUrl}
             alt="Photo" />
           </figure>

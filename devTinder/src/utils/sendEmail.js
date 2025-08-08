@@ -1,25 +1,20 @@
 const  { SendEmailCommand } = require("@aws-sdk/client-ses");
 const { sesClient } = require("./sesClient");
 
-const createSendEmailCommand = (toAddress, fromAddress) => {
+const createSendEmailCommand = (toAddress, fromAddress, Subject, body) => {
   return new SendEmailCommand({
     Destination: {
-      /* required */
       CcAddresses: [
-        /* more items */
       ],
       ToAddresses: [
         toAddress,
-        /* more To-email addresses */
       ],
     },
     Message: {
-      /* required */
       Body: {
-        /* required */
         Html: {
           Charset: "UTF-8",
-          Data: "<h1> This is the Email body</h1>",
+          Data: `<h1> ${body}</h1>`,
         },
         Text: {
           Charset: "UTF-8",
@@ -28,7 +23,7 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
       },
       Subject: {
         Charset: "UTF-8",
-        Data: "EMAIL_SUBJECT",
+        Data: Subject,
       },
     },
     Source: fromAddress,
@@ -38,10 +33,15 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
   });
 };
 
-const run = async () => {
+const run = async (Subject, body) => {
   const sendEmailCommand = createSendEmailCommand(
-    "prakashmaddi325@gmail.com",
+    // Replace with the recipient's email address
     "prakashmaddi525@gmail.com",
+    // Replace with the sender's email address
+    // This email address must be verified with Amazon SES.
+    "prakashmaddi325@gmail.com",
+    Subject,
+    body
   );
 
   try {

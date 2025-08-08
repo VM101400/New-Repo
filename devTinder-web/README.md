@@ -46,7 +46,7 @@ Route=/profile => Profile
 - Signup on AWS
 - Launch Instance
 - chmod 400 <secret>.pem
-- Connected to the machine using ssh command ( ssh -i "devTinder-secret.pem" ubuntu@ec2-43-204-96-49.ap-south-1.compute.amazonaws.com )
+- Connected to the machine using ssh command ( ssh -i "devTinder-secret.pem" ubuntu@ec2-65-2-80-147.ap-south-1.compute.amazonaws.com )
 - Installed Node version 24.0.2 (nvm install 24.0.2)
 - Git clone
 - Frontend project
@@ -57,7 +57,7 @@ Route=/profile => Profile
   - sudo systemctl start nginx
   - sudo systemctl enable nginx
   - Copy code from dist(build file) to /var/www/html/
-  - sudo scp -r dist/\* /var/www/html/
+  - sudo scp -r dist/\ identity\* /var/www/html/
   - Enable port :80 of your instance (AWS instance)
 - Backend Project
 
@@ -108,7 +108,7 @@ Route=/profile => Profile
     - Give Access to AmazonSESFullAccess
     - Amazon SES: Create a Identity
     - Verify your domain name
-    - Verify an email address
+    - Verify an email address identity
     - Install AWS SDK - v3
     - Code Example https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/ses#code-examples
     - Setup sesClient
