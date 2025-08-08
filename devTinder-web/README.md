@@ -72,23 +72,48 @@ Route=/profile => Profile
 
 # Nginx config:
 
-Frontend = http://54.159.6.65/
-Backend = http://54.159.6.65/:8888/
+    Frontend = http://54.159.6.65/
+    Backend = http://54.159.6.65/:8888/
 
-Domain name = devTinder.com => 54.159.6.65
+    Domain name = devTinder.com => 54.159.6.65
 
-Frontend = devTinder.com
-Backend = devTinder.com:8888 => devTinder.com/api
+    Frontend = devTinder.com
+    Backend = devTinder.com:8888 => devTinder.com/api
 
-nginx config :
+    nginx config :
 
-server_name 54.159.6.65;
+    server_name 54.159.6.65;
 
-location /api/ {
-proxy_pass http://localhost:8888/;
-proxy_http_version 1.1;
-proxy_set_header Upgrade $http_upgrade;
-proxy_set_header Connection 'upgrade';
-proxy_set_header Host $host;
-proxy_cache_bypass $http_upgrade;
-}
+    location /api/ {
+      proxy_pass http://localhost:8888/;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+
+# Adding a custom Domain name
+
+    - Purchased Domain Name from godaddy
+    - signup on cloudflare & add a new domain name
+    - change the nameservers on godaddy and point it to cloudflare
+    - wait for sometime till your nameservers are updated ~ 15 minutes
+    - DNS record: A devtinder.in 54.159.6.65
+    - Enable SSL for website
+
+# Sending Emails via SES
+
+    - Create a IAM user
+    - Give Access to AmazonSESFullAccess
+    - Amazon SES: Create a Identity
+    - Verify your domain name
+    - Verify an email address
+    - Install AWS SDK - v3
+    - Code Example https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/ses#code-examples
+    - Setup sesClient
+    - Access Credentials should be created on IAM under security credentials tab
+    - Add the credentials to the env file
+    - Write code for SESClient
+    - Write code for Sending email address
+    - Make the email dynamic by passing more params to the run function

@@ -3,6 +3,7 @@ const app = express();
 const { connectDB } = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+require('dotenv').config()
 
 // whitelisting this origin domain name
 app.use(cors({
@@ -26,7 +27,7 @@ app.use("/", userRouter);
 connectDB()
 .then(() => {
     console.log("Database connection established...");
-    app.listen(8888, () => {
+    app.listen(process.env.PORT, () => {
         console.log("Server is running successfully on port 8888..!");
     });
 })
