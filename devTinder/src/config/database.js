@@ -2,7 +2,6 @@
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
-    console.log(process.env.DB_CONNECTION_SECRET);
     // Connect to MongoDB using Mongoose
     // This function establishes a connection to the MongoDB database
     // using the connection string provided.
