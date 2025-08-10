@@ -3,7 +3,12 @@ const app = express();
 const { connectDB } = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
+// Load environment variables from .env file
 require('dotenv').config()
+
+// Importing the cron job
+require("./utils/cronjob")
 
 // whitelisting this origin domain name
 app.use(cors({
